@@ -1,57 +1,48 @@
 import logging
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.utils import executor
-from pybit.unified_trading import HTTP
+from aiogram import Bot, Dispatcher, types, executor
+import requests
+import talib
+import numpy as np
 
 API_TOKEN = "7557990762:AAHsPB9g7S7ZJWDOwSt3GiR-Pt23C8xSmaA"
-BYBIT_API_KEY = 'YOUR_BYBIT_API_KEY'
-BYBIT_API_SECRET = 'YOUR_BYBIT_API_SECRET'
-AUTHORIZED_USERS = [770139883]
-
-logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
-session = HTTP(
-    api_key=BYBIT_API_KEY,
-    api_secret=BYBIT_API_SECRET,
-    testnet=True
-)
+def fetch_klines(symbol="BTCUSDT", interval="15m", limit=100):
+    url = "https://api.binance.com/api/v3/klines"
+    params = {"symbol": symbol, "interval": interval, "limit": limit}
+    response = requests.get(url, params=params)
+    data = response.json()
+    return [float(candle[4]) for candle in data]  # Close prices
 
-@dp.message_handler(commands=['start'])
-async def start_cmd(message: types.Message):
-    if message.from_user.id not in AUTHORIZED_USERS:
-        await message.reply("⛔ У вас немає доступу до цього бота.")
-        return
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(KeyboardButton("📊 Баланс"), KeyboardButton("📈 Відкрити Long"))
-    await message.reply("Вітаю! Я бот для торгівлі на Bybit", reply_markup=keyboard)
+def predict_direction(prices):
+    closes = np.array(prices)
+    sma = talib.SMA(closes, timeperiod=14)
+    rsi = talib.RSI(closes, timeperiod=14)
+    macd, signal, _ = talib.MACD(closes, fastperiod=12, slowperiod=26, signalperiod=9)
 
-@dp.message_handler(lambda message: message.text == "📊 Баланс")
-async def balance_handler(message: types.Message):
-    if message.from_user.id not in AUTHORIZED_USERS:
-        await message.reply("⛔ У вас немає доступу до цього бота.")
-        return
-    wallet = session.get_wallet_balance(accountType="UNIFIED")
-    usdt_balance = wallet['result']['list'][0]['coin'][0]['availableToWithdraw']
-    await message.reply(f"💰 Доступний баланс USDT: {usdt_balance}")
+    if rsi[-1] < 30 and macd[-1] > signal[-1]:
+        return "⬆ Вгору (LONG)"
+    elif rsi[-1] > 70 and macd[-1] < signal[-1]:
+        return "⬇ Вниз (SHORT)"
+    else:
+        return "➡ Бічний рух або невизначеність"
 
-@dp.message_handler(lambda message: message.text == "📈 Відкрити Long")
-async def open_long(message: types.Message):
-    if message.from_user.id not in AUTHORIZED_USERS:
-        await message.reply("⛔ У вас немає доступу до цього бота.")
-        return
-    response = session.place_order(
-        category="linear",
-        symbol="BTCUSDT",
-        side="Buy",
-        orderType="Market",
-        qty=0.001,
-        timeInForce="GoodTillCancel"
-    )
-    await message.reply(f"✅ Ордер на Long відкрито!\nOrder ID: {response['result']['orderId']}")
+@dp.message_handler(commands=["start"])
+async def start(message: types.Message):
+    await message.reply("Привіт! Надішли /predict щоб отримати прогноз BTC/USDT на 15 хвилин.")
 
-if __name__ == '__main__':
+@dp.message_handler(commands=["predict"])
+async def predict(message: types.Message):
+    try:
+        prices = fetch_klines()
+        forecast = predict_direction(prices)
+        await message.reply(f"📈 Прогноз на 15 хвилин для BTC/USDT:
+{forecast}")
+    except Exception as e:
+        await message.reply(f"⚠️ Помилка під час обробки: {e}")
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     executor.start_polling(dp, skip_updates=True)
