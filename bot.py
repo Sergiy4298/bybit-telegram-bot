@@ -3,6 +3,7 @@ from aiogram import Bot, Dispatcher, types, executor
 import requests
 import pandas_ta as ta
 import numpy as np
+np.nan
 
 API_TOKEN = "7557990762:AAHsPB9g7S7ZJWDOwSt3GiR-Pt23C8xSmaA"
 
