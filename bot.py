@@ -4,7 +4,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils import executor
 from pybit.unified_trading import HTTP
 
-API_TOKEN = 7557990762:AAHsPB9g7S7ZJWDOwSt3GiR-Pt23C8xSmaA
+API_TOKEN = "7557990762:AAHsPB9g7S7ZJWDOwSt3GiR-Pt23C8xSmaA"
 BYBIT_API_KEY = 'YOUR_BYBIT_API_KEY'
 BYBIT_API_SECRET = 'YOUR_BYBIT_API_SECRET'
 AUTHORIZED_USERS = [770139883]
