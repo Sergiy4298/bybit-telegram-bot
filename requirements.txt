@@ -1,6 +1,4 @@
-numpy==1.24.4
-pandas==1.5.3
-pandas-ta==0.3.14b0
-scikit-learn
-requests
 aiogram==2.25.1
+pandas==2.2.2
+pandas-ta==0.3.14b0
+requests
