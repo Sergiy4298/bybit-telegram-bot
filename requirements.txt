@@ -3,3 +3,4 @@ pandas==1.5.3
 pandas-ta==0.3.14b0
 scikit-learn
 requests
+aiogram==2.25.1
