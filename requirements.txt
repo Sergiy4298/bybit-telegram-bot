@@ -1,4 +1,4 @@
 aiogram==2.25.2
 requests
-numpy
-pandas_ta
+numpy==1.20.0
+pandas-ta==0.3.14b0
