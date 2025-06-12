@@ -38,8 +38,9 @@ async def predict(message: types.Message):
     try:
         prices = fetch_klines()
         forecast = predict_direction(prices)
-        await message.reply(f"📈 Прогноз на 15 хвилин для BTC/USDT:
-{forecast}")
+        await message.reply(f"""📈 Прогноз на 15 хвилин для BTC/USDT:
+{prediction}
+""")
     except Exception as e:
         await message.reply(f"⚠️ Помилка під час обробки: {e}")
 
