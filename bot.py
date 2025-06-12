@@ -6,7 +6,7 @@ import pandas_ta as ta
 import numpy as np
 
 # Токен з BotFather
-API_TOKEN = "ВАШ_ТОКЕН_ТУТ"  # ⚠️ Заміни на свій токен!
+API_TOKEN = "7557990762:AAHsPB9g7S7ZJWDOwSt3GiR-Pt23C8xSmaA"  
 
 # Налаштування логування
 logging.basicConfig(level=logging.INFO)
