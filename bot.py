@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 import pandas_ta as ta
 import numpy as np
+np.nan
 
 # Токен з BotFather
 API_TOKEN = "7557990762:AAHsPB9g7S7ZJWDOwSt3GiR-Pt23C8xSmaA"  
