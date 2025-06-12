@@ -1,7 +1,7 @@
 import logging
 from aiogram import Bot, Dispatcher, types, executor
 import requests
-import talib
+import pandas_ta as ta
 import numpy as np
 
 API_TOKEN = "7557990762:AAHsPB9g7S7ZJWDOwSt3GiR-Pt23C8xSmaA"
@@ -19,7 +19,7 @@ def fetch_klines(symbol="BTCUSDT", interval="15m", limit=100):
 def predict_direction(prices):
     closes = np.array(prices)
     sma = talib.SMA(closes, timeperiod=14)
-    rsi = talib.RSI(closes, timeperiod=14)
+    rsi = ta.rsi(df['close'], length=14)
     macd, signal, _ = talib.MACD(closes, fastperiod=12, slowperiod=26, signalperiod=9)
 
     if rsi[-1] < 30 and macd[-1] > signal[-1]:
