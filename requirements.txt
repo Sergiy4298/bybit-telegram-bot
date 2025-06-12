@@ -4,3 +4,4 @@ aiogram==2.25.1
 pandas==2.2.2
 pandas-ta
 requests
+numpy==1.23.5
