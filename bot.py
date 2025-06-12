@@ -18,9 +18,9 @@ def fetch_klines(symbol="BTCUSDT", interval="15m", limit=100):
 
 def predict_direction(prices):
     closes = np.array(prices)
-    sma = talib.SMA(closes, timeperiod=14)
+    sma = ta.sma(df['close'], length=14)
     rsi = ta.rsi(df['close'], length=14)
-    macd, signal, _ = talib.MACD(closes, fastperiod=12, slowperiod=26, signalperiod=9)
+    macd = ta.macd(df['close'])
 
     if rsi[-1] < 30 and macd[-1] > signal[-1]:
         return "⬆ Вгору (LONG)"
