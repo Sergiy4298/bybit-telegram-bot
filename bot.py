@@ -19,9 +19,15 @@ def fetch_kline_closes(symbol="BTCUSDT", interval="15m"):
         "limit": 100
     }
     response = requests.get(url, params=params)
-    data = response.json()
-    if not data or len(data) < 20:
-        raise ValueError("Недостатньо даних з Binance")
+    try:
+        data = response.json()
+        if isinstance(data, dict) and data.get("code"):
+            raise ValueError(f"Binance API error: {data['msg']}")
+        if not data or len(data) < 30:
+            raise ValueError("Недостатньо історичних даних з Binance")
+    except Exception as e:
+        raise ValueError(f"Помилка при обробці відповіді Binance: {e}")
+    
     closes = [float(candle[4]) for candle in data]
     return closes
 
