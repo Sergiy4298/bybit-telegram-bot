@@ -1,7 +1,4 @@
-setuptools
-wheel
-aiogram==2.25.1
-pandas==2.2.2
-pandas-ta
+aiogram
+pandas
 requests
-numpy==1.23.5
+ta
