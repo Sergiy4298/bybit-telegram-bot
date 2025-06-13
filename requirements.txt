@@ -1,4 +1,4 @@
-aiogram
-pandas
-requests
-ta
+aiogram==2.25.1
+pandas==1.5.3
+requests==2.31.0
+ta==0.10.2
